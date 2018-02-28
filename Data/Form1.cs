@@ -7,6 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using static Data.Control;
 
 namespace Data
 {
@@ -15,6 +16,15 @@ namespace Data
         public Form1()
         {
             InitializeComponent();
+            FillField();
+            CreateCreatures();
+        }
+
+        public void Draw()
+        {
+            Pen myPen = new Pen(Color.Black,1);
+            Graphics picture = Graphics.FromHwnd(pictureBox1.Handle)
+            picture.DrawRectangle(myPen);
         }
     }
 }

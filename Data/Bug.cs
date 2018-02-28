@@ -1,12 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Drawing.Text;
-using System.Linq;
-using System.Runtime.Remoting.Lifetime;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Data
+﻿namespace Data
 {
     class Bug
     {
@@ -66,7 +58,6 @@ namespace Data
             _y = 0;
             _genom = null;
             _direction = 0;
-
         }
 
         public Bug(int life, int x, int y, int[] genom, int direction)
@@ -92,41 +83,62 @@ namespace Data
                 }
                 case 1:
                 {
-                    _y--;
-                    _x++;
+                    if (_y > 0&_x<95)
+                    {
+                        _y--;
+                        _x++;
+                    }
                     break;
                 }
                 case 2:
                 {
-                    _x++;
+                    if (_x < 95)
+                    {
+                        _x++;
+                    }
                     break;
                 }
                 case 3:
                 {
-                    _x++;
-                    _y++;
+                    if (_x < 95 & _y < 95)
+                    {
+                        _x++;
+                        _y++;
+                    }
                     break;
                 }
                 case 4:
                 {
-                    _y++;
+                    if (_y < 95)
+                    {
+                        _y++;
+                    }
                     break;
                 }
                 case 5:
                 {
-                    _x--;
-                    _y++;
+                    if (_y < 95 & _x>0)
+                    {
+                        _x--;
+                        _y++;
+                    }
                     break;
                 }
                 case 6:
                 {
-                    _x--;
+                    if (_x > 0)
+                    {
+                        _x--;
+                    }
                     break;
                 }
                 case 7:
                 {
-                    _x--;
-                    _y--;
+                    if (_x > 0 & _y > 0)
+                    {
+                        _x--;
+                        _y--;
+                    }
                     break;
                 }
             }
@@ -152,8 +164,16 @@ namespace Data
             {
                 case 1:
                 {
+                    if (_life<=90)
+                    {
                     _life += 10;
-                    return true;
+
+                        }
+                    else
+                    {
+                        _life = 100;
+                    }
+                        return true;
                 }
                 case 2:
                 {

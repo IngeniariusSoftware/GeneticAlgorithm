@@ -87,7 +87,7 @@ namespace Data
                             {
                                 ChildGenom[index] = rnd.Next(0, 64);
                             }
-                            Childs[kol] = new Bug(50, indexX, indexY, ChildGenom, rnd.Next(0, 8));
+                            Childs[kol] = new Bug(50, indexX, indexY, ChildGenom, rnd.Next(0, 8),0);
                             Field[indexY, indexX] = 3;
                             kol++;
                         }
@@ -132,7 +132,7 @@ namespace Data
                                     {
                                         if (rnd.Next(0, 50) == 0 & Field[indexY, indexX] == 0 & !create & kol < 64)
                                         {
-                                            Childs[kol] = new Bug(50, indexX, indexY, ChildGenom, rnd.Next(0, 8));
+                                            Childs[kol] = new Bug(50, indexX, indexY, ChildGenom, rnd.Next(0, 8),0);
                                             Field[indexY, indexX] = 3;
                                             kol++;
                                             create = true;
@@ -170,7 +170,7 @@ namespace Data
                         {
                             genom[index] = rnd.Next(0, 64);
                         }
-                        Bugs[kol] = new Bug(50, indexX, indexY, genom, rnd.Next(0, 8));
+                        Bugs[kol] = new Bug(50, indexX, indexY, genom, rnd.Next(0, 8),0);
                         Field[indexY, indexX] = 3;
                         kol++;
                     }
@@ -189,16 +189,17 @@ namespace Data
                     int steps = 0;
                     bool end = false;
                     Bugs[index]--;
-                    for (int gen = 0; steps < 100 & !end; gen++)
+                    while (steps < 256 & !end)
                     {
-                        if (gen > 63)
+                        Bugs[index].PublicGenomSelected++;
+                        if (Bugs[index].PublicGenomSelected > 63)
                         {
-                            gen = gen - 64;
+                            Bugs[index].PublicGenomSelected = Bugs[index].PublicGenomSelected - 64;
                         }
                         int BugX = Bugs[index].PublicX;
                         int BugY = Bugs[index].PublicY;
                         steps++;
-                        if (Bugs[index].PublicGenom[gen] < 8)
+                        if (Bugs[index].PublicGenom[Bugs[index].PublicGenomSelected] < 8)
                         {
                             switch (Bugs[index].Direction)
                             {
@@ -316,13 +317,13 @@ namespace Data
                             }
                             end = true;
                         }
-                        if (Bugs[index].PublicGenom[gen] > 7 & Bugs[index].PublicGenom[gen] < 16)
+                        if (Bugs[index].PublicGenom[Bugs[index].PublicGenomSelected] > 7 & Bugs[index].PublicGenom[Bugs[index].PublicGenomSelected] < 16)
                         {
-                            Bugs[index].Turn(Bugs[index].PublicGenom[gen] - 8);
+                            Bugs[index].Turn(Bugs[index].PublicGenom[Bugs[index].PublicGenomSelected] - 8);
                         }
-                        if (Bugs[index].PublicGenom[gen] > 15 & Bugs[index].PublicGenom[gen] < 24)
+                        if (Bugs[index].PublicGenom[Bugs[index].PublicGenomSelected] > 15 & Bugs[index].PublicGenom[Bugs[index].PublicGenomSelected] < 24)
                         {
-                            switch (Bugs[index].PublicGenom[gen])
+                            switch (Bugs[index].PublicGenom[Bugs[index].PublicGenomSelected])
                             {
                                 case 16:
                                 {
@@ -432,9 +433,9 @@ namespace Data
 
                             }
                         }
-                        if (Bugs[index].PublicGenom[gen] > 23 & Bugs[index].PublicGenom[gen] < 32)
+                        if (Bugs[index].PublicGenom[Bugs[index].PublicGenomSelected] > 23 & Bugs[index].PublicGenom[Bugs[index].PublicGenomSelected] < 32)
                         {
-                            switch (Bugs[index].PublicGenom[gen])
+                            switch (Bugs[index].PublicGenom[Bugs[index].PublicGenomSelected])
                             {
                                 case 24:
                                 {
@@ -606,16 +607,16 @@ namespace Data
 
                             }
                         }
-                        if (Bugs[index].PublicGenom[gen] > 31 & Bugs[index].PublicGenom[gen] < 64)
+                        if (Bugs[index].PublicGenom[Bugs[index].PublicGenomSelected] > 31 & Bugs[index].PublicGenom[Bugs[index].PublicGenomSelected] < 64)
                         {
-                            gen = gen * 2;
-                            if (gen > 63)
+                            Bugs[index].PublicGenomSelected = Bugs[index].PublicGenomSelected * 2;
+                            if (Bugs[index].PublicGenomSelected > 63)
                             {
-                                gen = gen - 64;
+                                Bugs[index].PublicGenomSelected = Bugs[index].PublicGenomSelected - 64;
                             }
                         }
                     }
-                    if (steps > 99)
+                    if (steps > 255)
                     {
                         Bugs[index].PublicLife = 0;
                     }

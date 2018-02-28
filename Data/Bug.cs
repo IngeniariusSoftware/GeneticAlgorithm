@@ -42,6 +42,12 @@
             set { _genom = value; }
             get => _genom;
         }
+        private int _genomSelected;
+        public int PublicGenomSelected
+        {
+            set { _genomSelected = value; }
+            get => _genomSelected;
+        }
 
         private int _direction;
 
@@ -58,15 +64,17 @@
             _y = 0;
             _genom = null;
             _direction = 0;
+            _genomSelected = 0;
         }
 
-        public Bug(int life, int x, int y, int[] genom, int direction)
+        public Bug(int life, int x, int y, int[] genom, int direction,int selectedGenom)
         {
             _life = life;
             _x = x;
             _y = y;
             _genom = genom;
             _direction = direction;
+            _genomSelected = selectedGenom;
         }
 
         public void Move()
@@ -164,14 +172,14 @@
             {
                 case 1:
                 {
-                    if (_life<=90)
+                    if (_life<=200)
                     {
                     _life += 10;
 
                         }
                     else
                     {
-                        _life = 100;
+                        _life = 200;
                     }
                         return true;
                 }

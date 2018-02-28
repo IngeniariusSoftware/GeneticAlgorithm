@@ -74,7 +74,7 @@ namespace Data
         {
             Bug[] Childs = new Bug[64];
             int kol = 0;
-            if (CurrentNumberBugs < 8)
+            if (CurrentNumberBugs == 0)
             {
                 for (int indexY = 0; indexY < SizeMapY; indexY++)
                 {
@@ -87,7 +87,7 @@ namespace Data
                             {
                                 ChildGenom[index] = rnd.Next(0, 64);
                             }
-                            Childs[kol] = new Bug(50, indexX, indexY, ChildGenom, rnd.Next(0, 8),0);
+                            Childs[kol] = new Bug(50, indexX, indexY, ChildGenom, rnd.Next(0, 8), 0);
                             Field[indexY, indexX] = 3;
                             kol++;
                         }
@@ -100,11 +100,12 @@ namespace Data
                 {
                     if (Bugs[indexFirstParent].PublicLife > 0)
                     {
-                        int[] ChildGenom = new int [64];
                         for (int indexSecondParent = 0; indexSecondParent < 64; indexSecondParent++)
                         {
                             if (Bugs[indexSecondParent].PublicLife > 0)
                             {
+                                int[] ChildGenom = new int[64];
+
                                 for (int indexGenom = 0; indexGenom < 64; indexGenom++)
                                 {
                                     if (Bugs[indexFirstParent].PublicGenom[indexGenom] ==
@@ -132,7 +133,7 @@ namespace Data
                                     {
                                         if (rnd.Next(0, 50) == 0 & Field[indexY, indexX] == 0 & !create & kol < 64)
                                         {
-                                            Childs[kol] = new Bug(50, indexX, indexY, ChildGenom, rnd.Next(0, 8),0);
+                                            Childs[kol] = new Bug(50, indexX, indexY, ChildGenom, rnd.Next(0, 8), 0);
                                             Field[indexY, indexX] = 3;
                                             kol++;
                                             create = true;
@@ -145,7 +146,23 @@ namespace Data
                         }
                     }
                 }
-
+                for (int indexY = 0; indexY < SizeMapY; indexY++)
+                {
+                    for (int indexX = 0; indexX < SizeMapX; indexX++)
+                    {
+                        if (rnd.Next(0, 50) == 0 & Field[indexY, indexX] == 0 & kol < 64)
+                        {
+                            int[] ChildGenom = new int[64];
+                            for (int index = 0; index < ChildGenom.Length; index++)
+                            {
+                                ChildGenom[index] = rnd.Next(0, 64);
+                            }
+                            Childs[kol] = new Bug(50, indexX, indexY, ChildGenom, rnd.Next(0, 8), 0);
+                            Field[indexY, indexX] = 3;
+                            kol++;
+                        }
+                    }
+                }
             }
             for (int index = 0; index < 64; index++)
             {

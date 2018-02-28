@@ -29,17 +29,17 @@ namespace Data
             {
                 for (int indexX = 0; indexX < Field.GetLength(0); indexX++)
                 {
-                    if (Field[indexY, indexX] == 0 & Barrier < 32 & rnd.Next(0, 20) == 0)
+                    if (Field[indexY, indexX] == 0 & Barrier < 32 & rnd.Next(0, 100) == 0)
                     {
                         Field[indexY, indexX] = 4;
                         Barrier++;
                     }
-                    if (Field[indexY, indexX] == 0 & Food < 128 & rnd.Next(0, 4) == 0)
+                    if (Field[indexY, indexX] == 0 & Food < 128 & rnd.Next(0, 40) == 0)
                     {
                         Field[indexY, indexX] = 1;
                         Food++;
                     }
-                    if (Field[indexY, indexX] == 0 & Poison < 128 & rnd.Next(0, 4) == 0)
+                    if (Field[indexY, indexX] == 0 & Poison < 128 & rnd.Next(0, 40) == 0)
                     {
                         Field[indexY, indexX] = 2;
                         Poison++;
@@ -55,12 +55,12 @@ namespace Data
             {
                 for (int indexX = 0; indexX < Field.GetLength(0); indexX++)
                 {
-                    if (Field[indexY, indexX] == 0 & Food < 128 & rnd.Next(0, 4) == 0)
+                    if (Field[indexY, indexX] == 0 & Food < 128 & rnd.Next(0, 40) == 0)
                     {
                         Field[indexY, indexX] = 1;
                         Food++;
                     }
-                    if (Field[indexY, indexX] == 0 & Poison < 128 & rnd.Next(0, 4) == 0)
+                    if (Field[indexY, indexX] == 0 & Poison < 128 & rnd.Next(0, 40) == 0)
                     {
                         Field[indexY, indexX] = 2;
                         Poison++;
@@ -108,7 +108,7 @@ namespace Data
                                 {
                                     if (Field[indexY, indexX] == 0)
                                     {
-                                        Bugs[kol] = new Bug(50, indexX, indexY, ChildGenom, rnd.Next(0, 7));
+                                        Childs[kol] = new Bug(50, indexX, indexY, ChildGenom, rnd.Next(0, 7));
                                         kol++;
                                     }
                                 }
@@ -122,13 +122,12 @@ namespace Data
                 Field[Bugs[index].PublicY, Bugs[index].PublicX] = 0;
             }
             Bugs = Childs;
+            CurrentNumberBugs = kol;
         }
 
         public static void CreateNewCreatures()
         {
             int kol = 0;
-            CurrentNumberBugs
-                = 0;
             for (int indexY = 0; indexY < Field.GetLength(1); indexY++)
             {
                 for (int indexX = 0; indexX < Field.GetLength(0); indexX++)
@@ -147,9 +146,10 @@ namespace Data
                 }
 
             }
+            CurrentNumberBugs = kol;
         }
 
-        public void Run()
+        public static void Run()
         {
             for (int index = 0; index < Bugs.Length; index++)
             {

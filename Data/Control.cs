@@ -1,851 +1,654 @@
 ﻿using System;
-using System.IO;
-using System.Runtime.Serialization.Formatters.Binary;
-using System.Windows.Forms;
 
 namespace Data
 {
     class Control
     {
-        public static int MaxNumberFood = 256;
+        public static int Generation = 1;
 
-        public static int MaxNumberPoison = 256;
+        public static int SizeMapX = 96;
 
-        public static int MaxNumberBugs = 64;
+        public static int SizeMapY = 64;
 
-        public static int MaxNumberAnts = 0;
+        public static Bug[] Bugs = new Bug[64];
 
-        public static int MaxNumberSpiderEggs = 8;
+        public static int[,] Field = new int[SizeMapY, SizeMapX];
 
-        public static int MaxNumberSpiderWeb = 16;
+        public static int Food;
 
-        public static int MaxNumberSpiders = 36;
+        public static int Poison;
 
-        public static int MaxNumberRocks = 128;
-
-        public static int SizeMapX = 80;
-
-        public static int SizeMapY = 43;
-
-        public static Bug[] Bugs = new Bug[MaxNumberBugs];
-
-        public static Ant[] Ants = new Ant[MaxNumberAnts];
-
-        public static Spider[] Spiders = new Spider[MaxNumberSpiders];
-
-        public static Cell[,] Field = new Cell[SizeMapY, SizeMapX];
-
-        public static int CurrentNumberFood;
-
-        public static int CurrentNumberPoison;
-
-        public static int CurrentNumberRock;
+        public static int Barrier;
 
         public static int CurrentNumberBugs;
 
-        public static int CurrentNumberSpiders;
-
-        public static int CurrentNumberAnts;
-
-        public static Random Rnd = new Random();
-
-        public static void Check()
-        {
-
-
-
-        }
+        static Random rnd = new Random();
 
         public static void FillField()
         {
-            for (int indexY = 0; indexY < SizeMapY; indexY++)
+            for (int indexY = 0; indexY < Field.GetLength(0); indexY++)
             {
-                for (int indexX = 0; indexX < SizeMapX; indexX++)
+                for (int indexX = 0; indexX < Field.GetLength(1); indexX++)
                 {
-                    if (indexX == 0 | indexY == 0 | indexX == SizeMapX - 1 | indexY == SizeMapY - 1)
+                    if (Field[indexY, indexX] == 0 & Barrier < 32 & rnd.Next(0, 150) == 0)
                     {
-                        Field[indexY, indexX] = new Cell(3);
+                        Field[indexY, indexX] = 4;
+                        Barrier++;
                     }
-                    else
+                    if (Field[indexY, indexX] == 0 & Food < 128 & rnd.Next(0, 150) == 0)
                     {
-                        Field[indexY, indexX] = new Cell();
+                        Field[indexY, indexX] = 1;
+                        Food++;
+                    }
+                    if (Field[indexY, indexX] == 0 & Poison < 128 & rnd.Next(0, 150) == 0)
+                    {
+                        Field[indexY, indexX] = 2;
+                        Poison++;
                     }
                 }
-            }
-            int cellRndX = 0;
-            int cellRndY = 0;
-            while (CurrentNumberRock < MaxNumberRocks)
-            {
-                while (Field[cellRndY, cellRndX].PublicContent != 0)
-                {
-                    cellRndY = Rnd.Next(0, SizeMapY);
-                    cellRndX = Rnd.Next(0, SizeMapX);
-                }
-                Field[cellRndY, cellRndX].PublicContent = 4;
-                CurrentNumberRock++;
-            }
-            while (CurrentNumberFood < MaxNumberFood)
-            {
-                while (Field[cellRndY, cellRndX].PublicContent != 0)
-                {
-                    cellRndY = Rnd.Next(0, SizeMapY);
-                    cellRndX = Rnd.Next(0, SizeMapX);
-                }
-                Field[cellRndY, cellRndX].PublicContent = 1;
-                CurrentNumberFood++;
-            }
-            while (CurrentNumberPoison < MaxNumberPoison)
-            {
-                while (Field[cellRndY, cellRndX].PublicContent != 0)
-                {
-                    cellRndY = Rnd.Next(0, SizeMapY);
-                    cellRndX = Rnd.Next(0, SizeMapX);
-                }
-                Field[cellRndY, cellRndX].PublicContent = 2;
-                CurrentNumberPoison++;
             }
         }
+
 
         public static void FieldUpdate()
         {
-            int cellRndX = 0;
-            int cellRndY = 0;
-            while (CurrentNumberFood < MaxNumberFood)
+            for (int indexY = 0; indexY < Field.GetLength(0); indexY++)
             {
-                while (Field[cellRndY, cellRndX].PublicContent != 0)
+                for (int indexX = 0; indexX < Field.GetLength(1); indexX++)
                 {
-                    cellRndY = Rnd.Next(0, SizeMapY);
-                    cellRndX = Rnd.Next(0, SizeMapX);
-                }
-                Field[cellRndY, cellRndX].PublicContent = 1;
-                CurrentNumberFood++;
-            }
-            while (CurrentNumberPoison < MaxNumberPoison)
-            {
-                while (Field[cellRndY, cellRndX].PublicContent != 0)
-                {
-                    cellRndY = Rnd.Next(0, SizeMapY);
-                    cellRndX = Rnd.Next(0, SizeMapX);
-                }
-                Field[cellRndY, cellRndX].PublicContent = 2;
-                CurrentNumberPoison++;
-            }
-        }
-
-        public static void SortBugs()
-        {
-            bool change = true;
-            for (int indexMain = 0; indexMain < Bugs.Length & change; indexMain++)
-            {
-                change = false;
-                for (int indexAdditional = 0; indexAdditional < Bugs.Length - 1 - indexMain; indexAdditional++)
-                {
-                    if (Bugs[indexAdditional].PublicLifeTime > Bugs[indexAdditional + 1].PublicLifeTime)
+                    if (Field[indexY, indexX] == 0 & Food < 128 & rnd.Next(0, 200) == 0)
                     {
-                        Bug shelfBug = Bugs[indexAdditional];
-                        Bugs[indexAdditional] = Bugs[indexAdditional + 1];
-                        Bugs[indexAdditional + 1] = shelfBug;
-                        change = true;
+                        Field[indexY, indexX] = 1;
+                        Food++;
+                    }
+                    if (Field[indexY, indexX] == 0 & Poison < 128 & rnd.Next(0, 200) == 0)
+                    {
+                        Field[indexY, indexX] = 2;
+                        Poison++;
                     }
                 }
             }
-            //Проверка
-            //string listLife = "";
-            //foreach (var bug in Bugs)
-            //{
-            //    listLife = listLife + bug.PublicLifeTime.ToString() + " ";
-            //}
-            //MessageBox.Show(listLife);
-            //Конец проверки
-        }
-
-        public static void CreateChildsBugs()
-        {
-            Bug[] childs = new Bug[MaxNumberBugs];
-            CurrentNumberBugs = 0;
-            int cellRndX = 0;
-            int cellRndY = 0;
-            SortBugs();
-            for (int indexParent = 0; indexParent < 8; indexParent++)
-            {
-                for (int childIndex = 0; childIndex < 8; childIndex++)
-                {
-                    int[] childGenom = new int [Bug.PublicLengthGenom];
-                    for (int indexGenom = 0; indexGenom < Bug.PublicLengthGenom; indexGenom++)
-                    {
-                        childGenom[indexGenom] = Bugs[MaxNumberBugs - indexParent - 1].Genom[indexGenom];
-                    }
-                    if (6 > childIndex & childIndex > 3)
-                    {
-                        int rndKol = Rnd.Next(0, 8);
-                        for (int i = 0; i < rndKol; i++)
-                        {
-                            childGenom[Rnd.Next(0, Bug.PublicLengthGenom)] = Rnd.Next(0, Bug.PublicLengthGenom);
-                        }
-                    }
-                    if (childIndex > 5)
-                    {
-                        int rndParent = Rnd.Next(0, 8);
-                        for (int indexGenom = 0; indexGenom < Bug.PublicLengthGenom; indexGenom++)
-                        {
-                            if (Bugs[MaxNumberBugs - indexParent - 1].Genom[indexGenom] ==
-                                Bugs[MaxNumberBugs - rndParent - 1].Genom[indexGenom])
-                            {
-                                childGenom[indexGenom] = Bugs[MaxNumberBugs - indexParent - 1].Genom[indexGenom];
-                            }
-                            else
-                            {
-                                if (Rnd.Next(0, 2) == 0)
-                                {
-                                    childGenom[indexGenom] = Bugs[MaxNumberBugs - rndParent - 1].Genom[indexGenom];
-                                }
-                                else
-                                {
-                                    childGenom[indexGenom] = Bugs[MaxNumberBugs - indexParent - 1].Genom[indexGenom];
-                                }
-                            }
-                        }
-                        int rndKol = Rnd.Next(0, 3);
-                        for (int i = 0; i < rndKol; i++)
-                        {
-                            childGenom[Rnd.Next(0, Bug.PublicLengthGenom)] = Rnd.Next(0, Bug.PublicLengthGenom);
-                        }
-                    }
-                    while (Field[cellRndY, cellRndX].PublicContent != 0)
-                    {
-                        cellRndY = Rnd.Next(0, SizeMapY);
-                        cellRndX = Rnd.Next(0, SizeMapX);
-                    }
-                    childs[CurrentNumberBugs] = new Bug(cellRndX, cellRndY, childGenom, Rnd.Next(0, 8));
-                    Field[cellRndY, cellRndX].PublicContent = Bug.PublicTypeCell;
-                    CurrentNumberBugs++;
-                }
-            }
-            //Проверка
-            //string listChildGenom = "";
-            //int indexParents = 63;
-            //int indexAdd = 0;
-
-            //for (int indexs=0;indexs<64;indexs++)
-            //{
-            //    int numberMutation = 0;
-            //    for (int indexY = 0; indexY < LengthGenomY; indexY++)
-            //    {
-            //        for (int indexX = 0; indexX < LengthGenomX; indexX++)
-            //        {
-            //            if (childs[indexs].Genom[indexY, indexX] != Bugs[indexParents].Genom[indexY, indexX])
-            //            {
-            //                numberMutation++;
-            //            }
-            //        }
-            //    }
-            //    listChildGenom = listChildGenom + " " + numberMutation;
-            //    indexAdd++;
-            //    if (indexAdd % 8 == 0)
-            //        indexParents--;
-            //}
-            //MessageBox.Show(listChildGenom);
-            //Конец проверки
-            //for (int index = 0; index < Bugs.Length; index++)
-            //{
-            //    if (Field[Bugs[index].PublicY, Bugs[index].PublicX].PublicContent == 3)
-            //    {
-            //        Field[Bugs[index].PublicY, Bugs[index].PublicX].PublicContent = 0;
-            //    }
-            //}
-            Bugs = childs;
-            Bug.Generation++;
-            FileStream bugsFile = new FileStream("Bugs.bin", FileMode.OpenOrCreate);
-            BinaryFormatter binForm = new BinaryFormatter();
-            binForm.Serialize(bugsFile, childs);
-            bugsFile.Close();
-        }
-
-        public static void SortAnts()
-        {
-            bool change = true;
-            for (int indexMain = 0; indexMain < Ants.Length & change; indexMain++)
-            {
-                change = false;
-                for (int indexAdditional = 0; indexAdditional < Ants.Length - 1 - indexMain; indexAdditional++)
-                {
-                    if (Ants[indexAdditional].PublicLifeTime > Ants[indexAdditional + 1].PublicLifeTime)
-                    {
-                        Ant shelfAnt = Ants[indexAdditional];
-                        Ants[indexAdditional] = Ants[indexAdditional + 1];
-                        Ants[indexAdditional + 1] = shelfAnt;
-                        change = true;
-                    }
-                }
-            }
-        }
-
-        public static void CreateChildsAnts()
-        {
-            Ant[] childs = new Ant[MaxNumberAnts];
-            CurrentNumberAnts = 0;
-            int cellRndX = 0;
-            int cellRndY = 0;
-            SortAnts();
-            for (int indexParent = 0; indexParent < 8; indexParent++)
-            {
-                for (int childIndex = 0; childIndex < 8; childIndex++)
-                {
-                    int[] childGenom = new int[Ant.PublicLengthGenom];
-                    for (int indexGenom = 0; indexGenom < Ant.PublicLengthGenom; indexGenom++)
-                    {
-                        childGenom[indexGenom] = Ants[MaxNumberAnts - indexParent - 1].Genom[indexGenom];
-                    }
-                    if (6 > childIndex & childIndex > 3)
-                    {
-                        int rndKol = Rnd.Next(0, 8);
-                        for (int i = 0; i < rndKol; i++)
-                        {
-                            childGenom[Rnd.Next(0, Ant.PublicLengthGenom)] = Rnd.Next(0, Ant.PublicLengthGenom);
-                        }
-                    }
-                    if (childIndex > 5)
-                    {
-                        int rndParent = Rnd.Next(0, 8);
-                        for (int indexGenom = 0; indexGenom < Ant.PublicLengthGenom; indexGenom++)
-                        {
-                            if (Ants[MaxNumberAnts - indexParent - 1].Genom[indexGenom] ==
-                                Ants[MaxNumberAnts - rndParent - 1].Genom[indexGenom])
-                            {
-                                childGenom[indexGenom] = Ants[MaxNumberAnts - indexParent - 1].Genom[indexGenom];
-                            }
-                            else
-                            {
-                                if (Rnd.Next(0, 2) == 0)
-                                {
-                                    childGenom[indexGenom] = Ants[MaxNumberAnts - rndParent - 1].Genom[indexGenom];
-                                }
-                                else
-                                {
-                                    childGenom[indexGenom] = Ants[MaxNumberAnts - indexParent - 1].Genom[indexGenom];
-                                }
-                            }
-                        }
-                        int rndKol = Rnd.Next(0, 3);
-                        for (int i = 0; i < rndKol; i++)
-                        {
-                            childGenom[Rnd.Next(0, Ant.PublicLengthGenom)] = Rnd.Next(0, Ant.PublicLengthGenom);
-                        }
-                    }
-                    while (Field[cellRndY, cellRndX].PublicContent != 0)
-                    {
-                        cellRndY = Rnd.Next(0, SizeMapY);
-                        cellRndX = Rnd.Next(0, SizeMapX);
-                    }
-                    childs[CurrentNumberAnts] = new Ant(cellRndX, cellRndY, childGenom, Rnd.Next(0, 8));
-                    Field[cellRndY, cellRndX].PublicContent = Ant.PublicTypeCell;
-                    CurrentNumberAnts++;
-                }
-            }
-            Ants = childs;
-            Ant.Generation++;
-            FileStream antsFile = new FileStream("Ants.bin", FileMode.OpenOrCreate);
-            BinaryFormatter binForm = new BinaryFormatter();
-            binForm.Serialize(antsFile, childs);
-            antsFile.Close();
         }
 
         public static void CreateCreatures()
         {
-            int cellRndX = 0;
-            int cellRndY = 0;
-            CurrentNumberBugs = 0;
-            FileStream bugsFile = new FileStream("Bugs.bin", FileMode.OpenOrCreate);
-            BinaryFormatter binForm = new BinaryFormatter();
-            if (bugsFile.Length > 0)
+            Bug[] Childs = new Bug[64];
+            int kol = 0;
+            if (CurrentNumberBugs == 0)
             {
-                Bugs = (Bug[]) binForm.Deserialize(bugsFile);
-                foreach (var bug in Bugs)
+                for (int indexY = 0; indexY < SizeMapY; indexY++)
                 {
-                    while (Field[cellRndY, cellRndX].PublicContent != 0)
+                    for (int indexX = 0; indexX < SizeMapX; indexX++)
                     {
-                        cellRndY = Rnd.Next(0, SizeMapY);
-                        cellRndX = Rnd.Next(0, SizeMapX);
+                        if (rnd.Next(0, 50) == 0 & Field[indexY, indexX] == 0 & kol < 64)
+                        {
+                            int[] ChildGenom = new int[64];
+                            for (int index = 0; index < ChildGenom.Length; index++)
+                            {
+                                ChildGenom[index] = rnd.Next(0, 64);
+                            }
+                            Childs[kol] = new Bug(50, indexX, indexY, ChildGenom, rnd.Next(0, 8), 0);
+                            Field[indexY, indexX] = 3;
+                            kol++;
+                        }
                     }
-                    bug.PublicX = cellRndX;
-                    bug.PublicY = cellRndY;
-                    Field[cellRndY, cellRndX].PublicContent = Bug.PublicTypeCell;
                 }
-                CurrentNumberBugs = Bugs.Length;
             }
             else
             {
-                while (CurrentNumberBugs < MaxNumberBugs)
+                for (int indexFirstParent = 0; indexFirstParent < 64; indexFirstParent++)
                 {
-                    while (Field[cellRndY, cellRndX].PublicContent != 0)
+                    if (Bugs[indexFirstParent].PublicLife > 0)
                     {
-                        cellRndY = Rnd.Next(0, SizeMapY);
-                        cellRndX = Rnd.Next(0, SizeMapX);
+                        for (int indexSecondParent = 0; indexSecondParent < 64; indexSecondParent++)
+                        {
+                            if (Bugs[indexSecondParent].PublicLife > 0)
+                            {
+                                int[] ChildGenom = new int[64];
+
+                                for (int indexGenom = 0; indexGenom < 64; indexGenom++)
+                                {
+                                    if (Bugs[indexFirstParent].PublicGenom[indexGenom] ==
+                                        Bugs[indexSecondParent].PublicGenom[indexGenom])
+                                    {
+                                        ChildGenom[indexGenom] = Bugs[indexFirstParent].PublicGenom[indexGenom];
+                                    }
+                                    else
+                                    {
+                                        if (rnd.Next(0, 2) == 0)
+                                        {
+                                            ChildGenom[indexGenom] = Bugs[indexFirstParent].PublicGenom[indexGenom];
+                                        }
+                                        else
+                                        {
+                                            ChildGenom[indexGenom] = Bugs[indexSecondParent].PublicGenom[indexGenom];
+                                        }
+                                    }
+
+                                }
+                                bool create = false;
+                                for (int indexY = 0; indexY < SizeMapY; indexY++)
+                                {
+                                    for (int indexX = 0; indexX < SizeMapX; indexX++)
+                                    {
+                                        if (rnd.Next(0, 50) == 0 & Field[indexY, indexX] == 0 & !create & kol < 64)
+                                        {
+                                            Childs[kol] = new Bug(50, indexX, indexY, ChildGenom, rnd.Next(0, 8), 0);
+                                            Field[indexY, indexX] = 3;
+                                            kol++;
+                                            create = true;
+                                        }
+                                    }
+
+
+                                }
+                            }
+                        }
                     }
-                    int[] genom = new int[Bug.PublicLengthGenom];
-                    for (int index = 0; index < Bug.PublicLengthGenom; index++)
+                }
+                for (int indexY = 0; indexY < SizeMapY; indexY++)
+                {
+                    for (int indexX = 0; indexX < SizeMapX; indexX++)
                     {
-                        genom[index] = Rnd.Next(0, Bug.PublicLengthGenom);
+                        if (rnd.Next(0, 50) == 0 & Field[indexY, indexX] == 0 & kol < 64)
+                        {
+                            int[] ChildGenom = new int[64];
+                            for (int index = 0; index < ChildGenom.Length; index++)
+                            {
+                                ChildGenom[index] = rnd.Next(0, 64);
+                            }
+                            Childs[kol] = new Bug(50, indexX, indexY, ChildGenom, rnd.Next(0, 8), 0);
+                            Field[indexY, indexX] = 3;
+                            kol++;
+                        }
                     }
-                    Bugs[CurrentNumberBugs] = new Bug(cellRndX, cellRndY, genom, Rnd.Next(0, 8));
-                    Field[cellRndY, cellRndX].PublicContent = Bug.PublicTypeCell;
-                    CurrentNumberBugs++;
                 }
             }
-            bugsFile.Close();
-            CurrentNumberAnts = 0;
-            FileStream antsFile = new FileStream("Ants.bin", FileMode.OpenOrCreate);
-            binForm = new BinaryFormatter();
-            if (antsFile.Length > 0)
+            for (int index = 0; index < 64; index++)
             {
-                Ants = (Ant[]) binForm.Deserialize(antsFile);
-                foreach (var bug in Ants)
-                {
-                    while (Field[cellRndY, cellRndX].PublicContent != 0)
-                    {
-                        cellRndY = Rnd.Next(0, SizeMapY);
-                        cellRndX = Rnd.Next(0, SizeMapX);
-                    }
-                    bug.PublicX = cellRndX;
-                    bug.PublicY = cellRndY;
-                    Field[cellRndY, cellRndX].PublicContent = Ant.PublicTypeCell;
-                }
-                CurrentNumberAnts = Ants.Length;
+                Field[Bugs[index].PublicY, Bugs[index].PublicX] = 0;
             }
-            else
+            Bugs = Childs;
+            CurrentNumberBugs = kol;
+            Generation++;
+        }
+
+        public static void CreateNewCreatures()
+        {
+            int kol = 0;
+            for (int indexY = 0; indexY < Field.GetLength(0); indexY++)
             {
-                while (CurrentNumberAnts < MaxNumberAnts)
+                for (int indexX = 0; indexX < Field.GetLength(1); indexX++)
                 {
-                    while (Field[cellRndY, cellRndX].PublicContent != 0)
+                    if (Field[indexY, indexX] == 0 & kol < 64 & (rnd.Next(0, 50) == 0))
                     {
-                        cellRndY = Rnd.Next(0, SizeMapY);
-                        cellRndX = Rnd.Next(0, SizeMapX);
+                        int[] genom = new int[64];
+                        for (int index = 0; index < genom.Length; index++)
+                        {
+                            genom[index] = rnd.Next(0, 64);
+                        }
+                        Bugs[kol] = new Bug(50, indexX, indexY, genom, rnd.Next(0, 8),0);
+                        Field[indexY, indexX] = 3;
+                        kol++;
                     }
-                    int[] genom = new int[Ant.PublicLengthGenom];
-                    for (int index = 0; index < Ant.PublicLengthGenom; index++)
-                    {
-                        genom[index] = Rnd.Next(0, Ant.PublicLengthGenom);
-                    }
-                    Ants[CurrentNumberAnts] = new Ant(cellRndX, cellRndY, genom, Rnd.Next(0, 8));
-                    Field[cellRndY, cellRndX].PublicContent = Ant.PublicTypeCell;
-                    CurrentNumberAnts++;
                 }
+
             }
-            antsFile.Close();
+            CurrentNumberBugs = kol;
         }
 
         public static void Run()
         {
-            for (int index = 0; index < MaxNumberBugs; index++)
+            for (int index = 0; index < 64; index++)
             {
                 if (Bugs[index].PublicLife > 0)
                 {
-                    int maxSteps = 256;
                     int steps = 0;
                     bool end = false;
                     Bugs[index]--;
-                    Bugs[index].PublicLifeTime++;
-                    while (steps < maxSteps & !end)
+                    while (steps < 256 & !end)
                     {
-                        steps++;
-                        int bugX = Bugs[index].PublicX;
-                        int bugY = Bugs[index].PublicY;
-                        if (Bugs[index].PublicGenomSelected > Bug.PublicLengthGenom - 1)
+                        Bugs[index].PublicGenomSelected++;
+                        if (Bugs[index].PublicGenomSelected > 63)
                         {
-                            Bugs[index].PublicGenomSelected = Bugs[index].PublicGenomSelected - Bug.PublicLengthGenom;
+                            Bugs[index].PublicGenomSelected = Bugs[index].PublicGenomSelected - 64;
                         }
-                        int cellBugY = bugY + (int) Math.Round(
-                                           Math.Cos((Bugs[index].Genom[Bugs[index].PublicGenomSelected] * 45 +
-                                                     Bugs[index].PublicDirection * 45) / 180.0 * Math.PI),
-                                           MidpointRounding.AwayFromZero);
-                        int cellBugX = bugX + (int) Math.Round(
-                                           Math.Sin((Bugs[index].Genom[Bugs[index].PublicGenomSelected] * 45 +
-                                                     Bugs[index].PublicDirection * 45) / 180.0 * Math.PI),
-                                           MidpointRounding.AwayFromZero);
-                        if (Bugs[index].Genom[Bugs[index].PublicGenomSelected] < 8)
+                        int BugX = Bugs[index].PublicX;
+                        int BugY = Bugs[index].PublicY;
+                        steps++;
+                        if (Bugs[index].PublicGenom[Bugs[index].PublicGenomSelected] < 8)
                         {
-                            Bugs[index].Move(Field[cellBugY, cellBugX].PublicContent, cellBugY, cellBugX);
-                            Bugs[index].See(Field[cellBugY, cellBugX].PublicContent);
-                            switch (Field[cellBugY, cellBugX].PublicContent)
+                            switch (Bugs[index].Direction)
                             {
+                                case 0:
+                                {
+                                    if (BugY > 0)
+                                    {
+                                        if (Field[BugY - 1, BugX] == 0)
+                                        {
+                                            Field[BugY, BugX] = 0;
+                                            Bugs[index].Move();
+                                            Field[Bugs[index].PublicY, Bugs[index].PublicX] = 3;
+                                        }
+                                    }
+                                    break;
+                                }
                                 case 1:
                                 {
-                                    CurrentNumberFood--;
+                                    if (BugY > 0 & BugX + 1 < SizeMapX)
+                                    {
+                                        if (Field[BugY - 1, BugX + 1] == 0)
+                                        {
+                                            Field[BugY, BugX] = 0;
+                                            Bugs[index].Move();
+                                            Field[Bugs[index].PublicY, Bugs[index].PublicX] = 3;
+                                        }
+
+                                    }
+                                    break;
+                                }
+                                case 2:
+                                {
+                                    if (BugX + 1 < SizeMapX)
+                                    {
+                                        if (Field[BugY, BugX + 1] == 0)
+                                        {
+                                            Field[BugY, BugX] = 0;
+                                            Bugs[index].Move();
+                                            Field[Bugs[index].PublicY, Bugs[index].PublicX] = 3;
+                                        }
+
+                                    }
+                                    break;
+                                }
+                                case 3:
+                                {
+                                    if (BugX + 1 < SizeMapX & BugY + 1 < SizeMapY)
+                                    {
+                                        if (Field[BugY + 1, BugX + 1] == 0)
+                                        {
+                                            Field[BugY, BugX] = 0;
+                                            Bugs[index].Move();
+                                            Field[Bugs[index].PublicY, Bugs[index].PublicX] = 3;
+                                        }
+
+                                    }
+                                    break;
+                                }
+                                case 4:
+                                {
+                                    if (BugY + 1 < SizeMapY)
+                                    {
+                                        if (Field[BugY + 1, BugX] == 0)
+                                        {
+                                            Field[BugY, BugX] = 0;
+                                            Bugs[index].Move();
+                                            Field[Bugs[index].PublicY, Bugs[index].PublicX] = 3;
+                                        }
+
+                                    }
+                                    break;
+                                }
+                                case 5:
+                                {
+                                    if (BugY + 1 < SizeMapY & BugX > 0)
+                                    {
+                                        if (Field[BugY + 1, BugX - 1] == 0)
+                                        {
+                                            Field[BugY, BugX] = 0;
+                                            Bugs[index].Move();
+                                            Field[Bugs[index].PublicY, Bugs[index].PublicX] = 3;
+                                        }
+
+                                    }
+                                    break;
+                                }
+                                case 6:
+                                {
+                                    if (BugX > 0)
+                                    {
+                                        if (Field[BugY, BugX - 1] == 0)
+                                        {
+                                            Field[BugY, BugX] = 0;
+                                            Bugs[index].Move();
+                                            Field[Bugs[index].PublicY, Bugs[index].PublicX] = 3;
+                                        }
+
+                                    }
+                                    break;
+                                }
+                                case 7:
+                                {
+                                    if (BugX > 0 & BugY > 0)
+                                    {
+                                        if (Field[BugY - 1, BugX - 1] == 0)
+                                        {
+                                            Field[BugY, BugX] = 0;
+                                            Bugs[index].Move();
+                                            Field[Bugs[index].PublicY, Bugs[index].PublicX] = 3;
+                                        }
+
+                                    }
                                     break;
                                 }
                             }
-                            Field[bugY, bugX].PublicContent = 0;
-                            Field[Bugs[index].PublicY, Bugs[index].PublicX].PublicContent = Bug.PublicTypeCell;
                             end = true;
                         }
-                        else
+                        if (Bugs[index].PublicGenom[Bugs[index].PublicGenomSelected] > 7 & Bugs[index].PublicGenom[Bugs[index].PublicGenomSelected] < 16)
                         {
-                            if (Bugs[index].Genom[Bugs[index].PublicGenomSelected] > 7 &
-                                Bugs[index].Genom[Bugs[index].PublicGenomSelected] < 16)
+                            Bugs[index].Turn(Bugs[index].PublicGenom[Bugs[index].PublicGenomSelected] - 8);
+                        }
+                        if (Bugs[index].PublicGenom[Bugs[index].PublicGenomSelected] > 15 & Bugs[index].PublicGenom[Bugs[index].PublicGenomSelected] < 24)
+                        {
+                            switch (Bugs[index].PublicGenom[Bugs[index].PublicGenomSelected])
                             {
-                                Bugs[index].Check(Field[cellBugY, cellBugX].PublicContent);
-                                Bugs[index].See(Field[cellBugY, cellBugX].PublicContent);
-                                switch (Field[cellBugY, cellBugX].PublicContent)
+                                case 16:
                                 {
-                                    case 1:
+                                    if (BugY > 0)
                                     {
-                                        Field[cellBugY, cellBugX].PublicContent = 0;
-                                        CurrentNumberFood--;
-                                        break;
+
+                                        if (Bugs[index].Check(Field[BugY - 1, BugX]))
+                                        {
+                                            Field[BugY - 1, BugX] = 1;
+                                            end = true;
+                                            Poison--;
+                                        }
                                     }
-                                    case 2:
-                                    {
-                                        Field[cellBugY, cellBugX].PublicContent = 1;
-                                        CurrentNumberFood++;
-                                        CurrentNumberPoison--;
-                                        break;
-                                    }
+                                    break;
                                 }
-                                end = true;
+                                case 17:
+                                {
+                                    if (BugY > 0 & BugX + 1 < 96)
+                                    {
+                                        if (Bugs[index].Check(Field[BugY - 1, BugX + 1]))
+                                        {
+                                            Field[BugY - 1, BugX + 1] = 1;
+                                            end = true;
+                                            Poison--;
+                                        }
+                                    }
+                                    break;
+                                }
+                                case 18:
+                                {
+                                    if (BugX + 1 < SizeMapX)
+                                    {
+                                        if (Bugs[index].Check(Field[BugY, BugX + 1]))
+                                        {
+                                            Field[BugY, BugX + 1] = 1;
+                                            end = true;
+                                            Poison--;
+                                        }
+                                    }
+                                    break;
+                                }
+                                case 19:
+                                {
+                                    if (BugY + 1 < SizeMapY & BugX + 1 < SizeMapX)
+                                    {
+                                        if (Bugs[index].Check(Field[BugY + 1, BugX + 1]))
+                                        {
+                                            Field[BugY + 1, BugX + 1] = 1;
+                                            end = true;
+                                            Poison--;
+                                        }
+                                    }
+                                    break;
+                                }
+                                case 20:
+                                {
+                                    if (BugY + 1 < SizeMapY)
+                                    {
+                                        if (Bugs[index].Check(Field[BugY + 1, BugX]))
+                                        {
+                                            Field[BugY + 1, BugX] = 1;
+                                            end = true;
+                                            Poison--;
+                                        }
+                                    }
+                                    break;
+                                }
+                                case 21:
+                                {
+                                    if (BugY + 1 < SizeMapY & BugX > 0)
+                                    {
+                                        if (Bugs[index].Check(Field[BugY + 1, BugX - 1]))
+                                        {
+                                            Field[BugY + 1, BugX - 1] = 1;
+                                            end = true;
+                                            Poison--;
+                                        }
+                                    }
+                                    break;
+                                }
+                                case 22:
+                                {
+                                    if (BugX > 0)
+                                    {
+                                        if (Bugs[index].Check(Field[BugY, BugX - 1]))
+                                        {
+                                            Field[BugY, BugX - 1] = 1;
+                                            end = true;
+                                            Poison--;
+                                        }
+                                    }
+                                    break;
+                                }
+                                case 23:
+                                {
+                                    if (BugY > 0 & BugX > 0)
+                                    {
+                                        if (Bugs[index].Check(Field[BugY - 1, BugX - 1]))
+                                        {
+                                            Field[BugY - 1, BugX - 1] = 1;
+                                            end = true;
+                                            Poison--;
+                                        }
+                                    }
+                                    break;
+                                }
+
                             }
-                            else
+                        }
+                        if (Bugs[index].PublicGenom[Bugs[index].PublicGenomSelected] > 23 & Bugs[index].PublicGenom[Bugs[index].PublicGenomSelected] < 32)
+                        {
+                            switch (Bugs[index].PublicGenom[Bugs[index].PublicGenomSelected])
                             {
-                                if (Bugs[index].Genom[Bugs[index].PublicGenomSelected] > 15 &
-                                    Bugs[index].Genom[Bugs[index].PublicGenomSelected] < 24)
+                                case 24:
                                 {
-                                    Bugs[index].See(Field[cellBugY, cellBugX].PublicContent);
-                                }
-                                else
-                                {
-                                    if (Bugs[index].Genom[Bugs[index].PublicGenomSelected] > 23 &
-                                        Bugs[index].Genom[Bugs[index].PublicGenomSelected] < 32)
+                                    if (BugY > 0)
                                     {
-                                        if (Bugs[index].PublicDirection +
-                                            Bugs[index].Genom[Bugs[index].PublicGenomSelected] -
-                                            24 > 7)
+                                        if (Bugs[index].Eat(Field[BugY - 1, BugX]))
                                         {
-                                            Bugs[index].PublicDirection =
-                                                Bugs[index].PublicDirection +
-                                                Bugs[index].Genom[Bugs[index].PublicGenomSelected] -
-                                                32;
-                                        }
-                                        else
-                                        {
-                                            Bugs[index].PublicDirection =
-                                                Bugs[index].PublicDirection +
-                                                Bugs[index].Genom[Bugs[index].PublicGenomSelected] -
-                                                24;
-                                        }
-                                        Bugs[index].PublicGenomSelected++;
-                                    }
-                                    else
-                                    {
-                                        if (Bugs[index].Genom[Bugs[index].PublicGenomSelected] > 31 &
-                                            Bugs[index].Genom[Bugs[index].PublicGenomSelected] < 40)
-                                        {
-                                            if (Field[cellBugY, cellBugX].PublicContent == Ant.PublicTypeCell)
+                                            if (Field[BugY - 1, BugX] == 1)
                                             {
-                                                bool find = false;
-                                                for (int indexAnt = 0; indexAnt < MaxNumberAnts & !find; indexAnt++)
-                                                {
-                                                    if (Ants[indexAnt].PublicLife > 0 &
-                                                        Ants[indexAnt].PublicX == cellBugX &
-                                                        Ants[indexAnt].PublicY == cellBugY)
-                                                    {
-                                                        Ants[indexAnt].PublicLife -= Bug.PublicAttack;
-                                                        find = true;
-                                                    }
-                                                }
+                                                Food--;
                                             }
                                             else
                                             {
-                                                if (Field[cellBugY, cellBugX].PublicContent == Spider.PublicTypeCell)
-                                                {
-                                                    bool find = false;
-                                                    for (int indexSpider = 0;
-                                                        indexSpider < MaxNumberSpiders & !find;
-                                                        indexSpider++)
-                                                    {
-                                                        if (Spiders[indexSpider].PublicLife > 0 &
-                                                            Spiders[indexSpider].PublicX == cellBugX &
-                                                            Spiders[indexSpider].PublicY == cellBugY)
-                                                        {
-                                                            Spiders[indexSpider].PublicLife -= Bug.PublicAttack;
-                                                            find = true;
-                                                        }
-                                                    }
-                                                }
+                                                Poison--;
                                             }
-                                            Bugs[index].PublicGenomSelected++;
+                                            end = true;
+                                            Field[BugY - 1, BugX] = 0;
+
+                                        }
+                                    }
+                                    break;
+                                }
+                                case 25:
+                                {
+                                    if (BugY > 0 & BugX + 1 < SizeMapX)
+                                    {
+                                        if (Bugs[index].Eat(Field[BugY - 1, BugX + 1]))
+                                        {
+                                            if (Field[BugY - 1, BugX + 1] == 1)
+                                            {
+                                                Food--;
+                                            }
+                                            else
+                                            {
+                                                Poison--;
+                                            }
+                                            end = true;
+                                            Field[BugY - 1, BugX + 1] = 0;
+                                        }
+                                    }
+                                    break;
+                                }
+                                case 26:
+                                {
+                                    if (BugX + 1 < SizeMapX)
+                                    {
+                                        if (Bugs[index].Eat(Field[BugY, BugX + 1]))
+                                        {
+                                            if (Field[BugY, BugX + 1] == 1)
+                                            {
+                                                Food--;
+                                            }
+                                            else
+                                            {
+                                                Poison--;
+                                            }
+                                            end = true;
+                                            Field[BugY, BugX + 1] = 0;
+                                        }
+                                    }
+                                    break;
+                                }
+                                case 27:
+                                {
+                                    if (BugY + 1 < SizeMapY & BugX + 1 < SizeMapX)
+                                    {
+                                        if (Bugs[index].Eat(Field[BugY + 1, BugX + 1]))
+                                        {
+                                            if (Field[BugY + 1, BugX + 1] == 1)
+                                            {
+                                                Food--;
+                                            }
+                                            else
+                                            {
+                                                Poison--;
+                                            }
+                                            Field[BugY + 1, BugX + 1] = 0;
                                             end = true;
                                         }
-                                        else
+                                    }
+                                    break;
+                                }
+                                case 28:
+                                {
+                                    if (BugY + 1 < SizeMapY)
+                                    {
+                                        if (Bugs[index].Eat(Field[BugY + 1, BugX]))
                                         {
-                                            if (Bugs[index].Genom[Bugs[index].PublicGenomSelected] > 39 &
-                                                Bugs[index].Genom[Bugs[index].PublicGenomSelected] < 80)
+                                            if (Field[BugY + 1, BugX] == 1)
                                             {
-                                                Bugs[index].PublicGenomSelected +=
-                                                    Bugs[index].Genom[Bugs[index].PublicGenomSelected];
+                                                Food--;
                                             }
-                                        }
+                                            else
+                                            {
+                                                Poison--;
+                                            }
+                                            end = true;
+                                            Field[BugY + 1, BugX] = 0;
 
+                                        }
                                     }
+                                    break;
                                 }
-                            }
-                        }
-                    }
-                    CurrentNumberBugs
-                        = 0;
-                    for (int indexBugs = 0; indexBugs < MaxNumberBugs; indexBugs++)
-                    {
-                        if (Bugs[indexBugs].PublicLife > 0)
-                        {
-                            CurrentNumberBugs++;
-                        }
-                        else
-                        {
-                            if (!Bugs[indexBugs].PublicIsDead)
-                            {
-                                Field[Bugs[indexBugs].PublicY, Bugs[indexBugs].PublicX].PublicContent = 1;
-                                Bugs[indexBugs].PublicIsDead = true;
-                                CurrentNumberFood++;
-                            }
-                        }
-                    }
-                    if (Bugs[index].PublicLife > 90 & MaxNumberBugs - CurrentNumberBugs > 1)
-                    {
-                        int bugX = Bugs[index].PublicX;
-                        int bugY = Bugs[index].PublicY;
-                        Bugs[index].PublicLife = 50;
-                        int[] childGenom = new int[Bug.PublicLengthGenom];
-                        for (int indexGenom = 0; indexGenom < Bug.PublicLengthGenom; indexGenom++)
-                        {
-                            childGenom[indexGenom] = Bugs[MaxNumberBugs - index - 1].Genom[indexGenom];
-                        }
-                        bool find = false;
-                        for (int i = 0; i < 8 & !find; i++)
-                        {
-                            int placeY = bugY + (int)Math.Round(Math.Cos(i * 45 / 180.0 * Math.PI),
-                                             MidpointRounding.AwayFromZero);
-                            int placeX = bugX + (int)Math.Round(Math.Sin(i * 45 / 180.0 * Math.PI),
-                                             MidpointRounding.AwayFromZero);
-                            if (Field[placeY, placeX].PublicContent == 0)
-                            {
-                                bool create = false;
-                                for (int indexPlaceBug = 0;
-                                    indexPlaceBug < Bugs.Length & !create;
-                                    indexPlaceBug++)
+                                case 29:
                                 {
-                                    if (Bugs[indexPlaceBug].PublicLife == 0)
+                                    if (BugY + 1 < SizeMapY & BugX > 0)
                                     {
-                                        find = true;
-                                        create = true;
-                                        Bugs[indexPlaceBug] = new Bug(placeX, placeY, childGenom, Rnd.Next(0, 8));
-                                        Field[placeY, placeX].PublicContent = Bug.PublicTypeCell;
+                                        if (Bugs[index].Eat(Field[BugY + 1, BugX - 1]))
+                                        {
+                                            if (Field[BugY + 1, BugX - 1] == 1)
+                                            {
+                                                Food--;
+                                            }
+                                            else
+                                            {
+                                                Poison--;
+                                            }
+                                            end = true;
+                                            Field[BugY + 1, BugX - 1] = 0;
+
+                                        }
                                     }
+                                    break;
                                 }
-                            }
-                        }
-                        int rndKol = Rnd.Next(0, 3);
-                        for (int i = 0; i < rndKol; i++)
-                        {
-                            childGenom[Rnd.Next(0, Bug.PublicLengthGenom)] = Rnd.Next(0, Bug.PublicLengthGenom);
-                        }
-                        find = false;
-                        for (int i = 0; i < 8 & !find; i++)
-                        {
-                            int placeY = bugY + (int)Math.Round(Math.Cos(i * 45 / 180.0 * Math.PI),
-                                             MidpointRounding.AwayFromZero);
-                            int placeX = bugX + (int)Math.Round(Math.Sin(i * 45 / 180.0 * Math.PI),
-                                             MidpointRounding.AwayFromZero);
-                            if (Field[placeY, placeX].PublicContent == 0)
-                            {
-                                bool create = false;
-                                for (int indexPlaceBug = 0;
-                                    indexPlaceBug < Bugs.Length & !create;
-                                    indexPlaceBug++)
+                                case 30:
                                 {
-                                    if (Bugs[indexPlaceBug].PublicLife == 0)
+                                    if (BugX > 0)
                                     {
-                                        find = true;
-                                        create = true;
-                                        Bugs[indexPlaceBug] = new Bug(placeX, placeY, childGenom, Rnd.Next(0, 8));
-                                        Field[placeY, placeX].PublicContent = Bug.PublicTypeCell;
+                                        if (Bugs[index].Eat(Field[BugY, BugX - 1]))
+                                        {
+                                            if (Field[BugY, BugX - 1] == 1)
+                                            {
+                                                Food--;
+                                            }
+                                            else
+                                            {
+                                                Poison--;
+                                            }
+                                            end = true;
+                                            Field[BugY, BugX - 1] = 0;
+
+
+                                        }
                                     }
+                                    break;
                                 }
+                                case 31:
+                                {
+                                    if (BugY > 0 & BugX > 0)
+                                    {
+                                        if (Bugs[index].Eat(Field[BugY - 1, BugX - 1]))
+                                        {
+                                            if (Field[BugY - 1, BugX - 1] == 1)
+                                            {
+                                                Food--;
+                                            }
+                                            else
+                                            {
+                                                Poison--;
+                                            }
+                                            end = true;
+                                            Field[BugY - 1, BugX - 1] = 0;
+
+
+                                        }
+                                    }
+                                    break;
+                                }
+
                             }
                         }
-                        if (CurrentNumberBugs == MaxNumberBugs)
+                        if (Bugs[index].PublicGenom[Bugs[index].PublicGenomSelected] > 31 & Bugs[index].PublicGenom[Bugs[index].PublicGenomSelected] < 64)
                         {
-                            FileStream bugsFile = new FileStream("Bugs.bin", FileMode.OpenOrCreate);
-                            BinaryFormatter binForm = new BinaryFormatter();
-                            binForm.Serialize(bugsFile, Bugs);
-                            bugsFile.Close();
+                            Bugs[index].PublicGenomSelected = Bugs[index].PublicGenomSelected * 2;
+                            if (Bugs[index].PublicGenomSelected > 63)
+                            {
+                                Bugs[index].PublicGenomSelected = Bugs[index].PublicGenomSelected - 64;
+                            }
                         }
                     }
+                    if (steps > 255)
+                    {
+                        Bugs[index].PublicLife = 0;
+                    }
+
                 }
             }
-            //for (int index = 0; index < MaxNumberAnts; index++)
-            //{
-            //    if (Ants[index].PublicLife > 0)
-            //    {
-            //        int maxSteps = 256;
-            //        int steps = 0;
-            //        bool end = false;
-            //        Ants[index]--;
-            //        Ants[index].PublicLifeTime++;
-            //        while (steps < maxSteps & !end)
-            //        {
-            //            steps++;
-            //            int antX = Ants[index].PublicX;
-            //            int antY = Ants[index].PublicY;
-            //            if (Ants[index].PublicGenomSelected > Ant.PublicLengthGenom - 1)
-            //            {
-            //                Ants[index].PublicGenomSelected = Ants[index].PublicGenomSelected - Ant.PublicLengthGenom;
-            //            }
-            //            int cellAntY = antY + (int) Math.Round(
-            //                               Math.Cos((Ants[index].Genom[Ants[index].PublicGenomSelected] * 45 +
-            //                                         Ants[index].PublicDirection * 45) / 180.0 * Math.PI),
-            //                               MidpointRounding.AwayFromZero);
-            //            int cellAntX = antX + (int) Math.Round(
-            //                               Math.Sin((Ants[index].Genom[Ants[index].PublicGenomSelected] * 45 +
-            //                                         Ants[index].PublicDirection * 45) / 180.0 * Math.PI),
-            //                               MidpointRounding.AwayFromZero);
-            //            if (Ants[index].Genom[Ants[index].PublicGenomSelected] < 8)
-            //            {
-            //                Ants[index].Move(Field[cellAntY, cellAntX].PublicContent, cellAntY, cellAntX);
-            //                Ants[index].See(Field[cellAntY, cellAntX].PublicContent);
-            //                switch (Field[cellAntY, cellAntX].PublicContent)
-            //                {
-            //                    case 1:
-            //                    {
-            //                        CurrentNumberFood--;
-            //                        break;
-            //                    }
-            //                }
-            //                Field[antY, antX].PublicContent = 0;
-            //                Field[Ants[index].PublicY, Ants[index].PublicX].PublicContent = Ant.PublicTypeCell;
-            //                end = true;
-            //            }
-            //            else
-            //            {
-            //                if (Ants[index].Genom[Ants[index].PublicGenomSelected] > 7 &
-            //                    Ants[index].Genom[Ants[index].PublicGenomSelected] < 16)
-            //                {
-            //                    Ants[index].Check(Field[cellAntY, cellAntX].PublicContent);
-            //                    Ants[index].See(Field[cellAntY, cellAntX].PublicContent);
-            //                    switch (Field[cellAntY, cellAntX].PublicContent)
-            //                    {
-            //                        case 1:
-            //                        {
-            //                            Field[cellAntY, cellAntX].PublicContent = 0;
-            //                            CurrentNumberFood--;
-            //                            break;
-            //                        }
-            //                    }
-            //                    end = true;
-            //                }
-            //                else
-            //                {
-            //                    if (Ants[index].Genom[Ants[index].PublicGenomSelected] > 15 &
-            //                        Ants[index].Genom[Ants[index].PublicGenomSelected] < 24)
-            //                    {
-            //                        Ants[index].See(Field[cellAntY, cellAntX].PublicContent);
-            //                    }
-            //                    else
-            //                    {
-            //                        if (Ants[index].Genom[Ants[index].PublicGenomSelected] > 23 &
-            //                            Ants[index].Genom[Ants[index].PublicGenomSelected] < 32)
-            //                        {
-            //                            if (Ants[index].PublicDirection +
-            //                                Ants[index].Genom[Ants[index].PublicGenomSelected] -
-            //                                24 > 7)
-            //                            {
-            //                                Ants[index].PublicDirection =
-            //                                    Ants[index].PublicDirection +
-            //                                    Ants[index].Genom[Ants[index].PublicGenomSelected] -
-            //                                    32;
-            //                            }
-            //                            else
-            //                            {
-            //                                Ants[index].PublicDirection =
-            //                                    Ants[index].PublicDirection +
-            //                                    Ants[index].Genom[Ants[index].PublicGenomSelected] -
-            //                                    24;
-            //                            }
-            //                            Ants[index].PublicGenomSelected++;
-            //                        }
-            //                        else
-            //                        {
-            //                            if (Ants[index].Genom[Ants[index].PublicGenomSelected] > 31 &
-            //                                Ants[index].Genom[Ants[index].PublicGenomSelected] < 40)
-            //                            {
-            //                                if (Field[cellAntY, cellAntX].PublicContent == Bug.PublicTypeCell)
-            //                                {
-            //                                    bool find = false;
-            //                                    for (int indexBug = 0; indexBug < MaxNumberBugs & !find; indexBug++)
-            //                                    {
-            //                                        if (Bugs[indexBug].PublicLife > 0 &
-            //                                            Bugs[indexBug].PublicX == cellAntX &
-            //                                            Bugs[indexBug].PublicY == cellAntY)
-            //                                        {
-            //                                            Bugs[indexBug].PublicLife -= Ant.PublicAttack;
-            //                                            find = true;
-            //                                        }
-            //                                    }
-            //                                }
-            //                                else
-            //                                {
-            //                                    if (Field[cellAntY, cellAntX].PublicContent == Spider.PublicTypeCell)
-            //                                    {
-            //                                        bool find = false;
-            //                                        for (int indexSpider = 0;
-            //                                            indexSpider < MaxNumberSpiders & !find;
-            //                                            indexSpider++)
-            //                                        {
-            //                                            if (Spiders[indexSpider].PublicLife > 0 &
-            //                                                Spiders[indexSpider].PublicX == cellAntX &
-            //                                                Spiders[indexSpider].PublicY == cellAntY)
-            //                                            {
-            //                                                Spiders[indexSpider].PublicLife -= Ant.PublicAttack;
-            //                                                find = true;
-            //                                            }
-            //                                        }
-            //                                    }
-            //                                }
-            //                                Ants[index].PublicGenomSelected++;
-            //                                end = true;
-            //                            }
-            //                            else
-            //                            {
-            //                                if (Ants[index].Genom[Ants[index].PublicGenomSelected] > 39 &
-            //                                    Ants[index].Genom[Ants[index].PublicGenomSelected] < 80)
-            //                                {
-            //                                    Ants[index].PublicGenomSelected +=
-            //                                        Ants[index].Genom[Ants[index].PublicGenomSelected];
-            //                                }
-            //                            }
-
-            //                        }
-            //                    }
-            //                }
-            //            }
-            //        }
-            //    }
-            //}
-            //CurrentNumberAnts
-            //    = 0;
-            //for (int indexAnts = 0; indexAnts < MaxNumberAnts; indexAnts++)
-            //{
-            //    if (Ants[indexAnts].PublicLife > 0)
-            //    {
-            //        CurrentNumberAnts++;
-            //    }
-            //    else
-            //    {
-            //        if (!Ants[indexAnts].PublicIsDead)
-            //        {
-            //            Field[Ants[indexAnts].PublicY, Ants[indexAnts].PublicX].PublicContent = 1;
-            //            Ants[indexAnts].PublicIsDead = true;
-            //            CurrentNumberFood++;
-            //        }
-            //    }
-            //}
+            CurrentNumberBugs
+                = 0;
+            for (int index = 0; index < 64; index++)
+            {
+                if (Bugs[index].PublicLife > 0)
+                {
+                    CurrentNumberBugs++;
+                }
+            }
         }
     }
 }

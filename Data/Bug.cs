@@ -1,229 +1,195 @@
-﻿using System;
-
-namespace Data
+﻿namespace Data
 {
-    [Serializable]
-    class Bug : Creature
+    class Bug
     {
-        private static int _lengthGenom = 80;
+        private int _life;
 
-        public static int PublicLengthGenom
+        public int PublicLife
         {
-            get => _lengthGenom;
+            set { _life = value; }
+            get => _life;
         }
 
-        private static int _typeCell = 12;
+        private int _x;
 
-        public static int PublicTypeCell
+        public int PublicX
         {
-            get => _typeCell;
+            set { _x = value; }
+            get => _x;
         }
 
-        private static int _startLife = 50;
+        private int _y;
 
-        private static int _attack = 10;
-
-        public static int PublicAttack
+        public int PublicY
         {
-            get => _attack;
+            set { _y = value; }
+            get => _y;
+        }
+
+        public static Bug operator --(Bug creature)
+        {
+            if (creature._life > 0)
+            {
+                creature._life--;
+            }
+            return creature;
+        }
+
+        private int[] _genom;
+
+        public int[] PublicGenom
+        {
+            set { _genom = value; }
+            get => _genom;
+        }
+        private int _genomSelected;
+        public int PublicGenomSelected
+        {
+            set { _genomSelected = value; }
+            get => _genomSelected;
+        }
+
+        private int _direction;
+
+        public int Direction
+        {
+            set { _direction = value; }
+            get => _direction;
         }
 
         public Bug()
         {
-            Life = 0;
-            X = 0;
-            Y = 0;
-            Genom = null;
-            Direction = 0;
-            LifeTime = 0;
-            IsDead = false;
+            _life = 0;
+            _x = 0;
+            _y = 0;
+            _genom = null;
+            _direction = 0;
+            _genomSelected = 0;
         }
 
-        public Bug(int x, int y, int[] genom, int direction) : base(x, y, genom, direction)
+        public Bug(int life, int x, int y, int[] genom, int direction,int selectedGenom)
         {
-            Life = _startLife;
+            _life = life;
+            _x = x;
+            _y = y;
+            _genom = genom;
+            _direction = direction;
+            _genomSelected = selectedGenom;
         }
 
-        public static Bug operator --(Bug bug)
+        public void Move()
         {
-            if (bug.Life > 0)
-            {
-                bug.Life--;
-            }
-            return bug;
-        }
-
-        public static int Generation = 1;
-
-        public override void Move(int cell, int cellY, int cellX)
-        {
-            switch (cell)
+            switch (_direction)
             {
                 case 0:
                 {
-                    X = cellX;
-                    Y = cellY;
+                    if (_y > 0)
+                    {
+                        _y--;
+                    }
                     break;
                 }
                 case 1:
                 {
-                    X = cellX;
-                    Y = cellY;
-                    if (Life < 90)
+                    if (_y > 0&_x<95)
                     {
-                        Life += 10;
-                    }
-                    else
-                    {
-                        Life = 99;
+                        _y--;
+                        _x++;
                     }
                     break;
                 }
                 case 2:
                 {
-                    Life = 0;
+                    if (_x < 95)
+                    {
+                        _x++;
+                    }
+                    break;
+                }
+                case 3:
+                {
+                    if (_x < 95 & _y < 95)
+                    {
+                        _x++;
+                        _y++;
+                    }
+                    break;
+                }
+                case 4:
+                {
+                    if (_y < 95)
+                    {
+                        _y++;
+                    }
+                    break;
+                }
+                case 5:
+                {
+                    if (_y < 95 & _x>0)
+                    {
+                        _x--;
+                        _y++;
+                    }
+                    break;
+                }
+                case 6:
+                {
+                    if (_x > 0)
+                    {
+                        _x--;
+                    }
+                    break;
+                }
+                case 7:
+                {
+                    if (_x > 0 & _y > 0)
+                    {
+                        _x--;
+                        _y--;
+                    }
                     break;
                 }
             }
         }
 
-        public override void Check(int cell)
+        public void Turn(int direction)
+        {
+            _direction = direction;
+        }
+
+        public bool Check(int cell)
+        {
+            if (cell == 2)
+            {
+                return true;
+            }
+            return false;
+        }
+
+        public bool Eat(int cell)
         {
             switch (cell)
             {
                 case 1:
                 {
-                    if (Life < 90)
+                    if (_life<=200)
                     {
-                        Life += 10;
-                    }
+                    _life += 10;
+
+                        }
                     else
                     {
-                        Life = 99;
+                        _life = 200;
                     }
-                    break;
+                        return true;
+                }
+                case 2:
+                {
+                    _life = 0;
+                    return true;
                 }
             }
+            return false;
         }
-
-        //private bool _dead;
-
-        //public bool PublicDead
-        //{
-        //    set { _dead = value; }
-        //    get => _dead;
-        //}
-
-        //private int _lifeTime;
-
-        //public int PublicLifeTime
-        //{
-        //    set { _lifeTime = value; }
-        //    get => _lifeTime;
-        //}
-
-        //private int _life;
-
-        //public int PublicLife
-        //{
-        //    set { _life = value; }
-        //    get => _life;
-        //}
-
-        //private int _x;
-
-        //public int PublicX
-        //{
-        //    set { _x = value; }
-        //    get => _x;
-        //}
-
-        //private int _y;
-
-        //public int PublicY
-        //{
-        //    set { _y = value; }
-        //    get => _y;
-        //}
-
-        //public static Bug operator --(Bug creature)
-        //{
-        //    if (creature._life > 0)
-        //    {
-        //        creature._life--;
-        //    }
-        //    return creature;
-        //}
-
-        //public int[] Genom;
-
-        //private int _genomSelected;
-
-        //public int PublicGenomSelected
-        //{
-        //    set { _genomSelected = value; }
-        //    get => _genomSelected;
-        //}
-
-        //private int _direction;
-
-        //public int Direction
-        //{
-        //    set { _direction = value; }
-        //    get => _direction;
-        //}
-        //public Bug()
-        //{
-        //    _life = 0;
-        //    _x = 0;
-        //    _y = 0;
-        //    Genom = null;
-        //    _direction = 0;
-        //    _lifeTime = 0;
-        //    _dead = false;
-        //}
-
-        //public Bug(int life, int x, int y, int[] genom, int direction)
-        //{
-        //    _life = life;
-        //    _x = x;
-        //    _y = y;
-        //    Genom = genom;
-        //    _direction = direction;
-        //    _lifeTime = 0;
-        //    _dead = false;
-        //}
-
-        //public void See(int cell)
-        //{
-        //    switch (cell)
-        //    {
-        //        case 0:
-        //        {
-        //            _genomSelected += 5;
-        //            break;
-        //        }
-        //        case 1:
-        //        {
-        //            _genomSelected += 4;
-        //                break;
-        //        }
-        //        case 2:
-        //        {
-        //            _genomSelected += 1;
-        //                break;
-        //        }
-        //        case 3:
-        //        {
-        //            _genomSelected += 3;
-        //                break;
-        //        }
-        //        case 4:
-        //        {
-        //            _genomSelected += 2;
-        //                break;
-        //        }
-        //    }
-        //}
     }
 }

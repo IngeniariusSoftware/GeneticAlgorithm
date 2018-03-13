@@ -111,16 +111,34 @@ namespace Data
             }
         }
 
+        public static void PrintInFile()
+        {
+            FileStream fs = new FileStream("Graphs\\lifedrain.txt",FileMode.Append);
+            StreamWriter Sw = new StreamWriter(fs);
+            Sw.WriteLine(Bugs[63].PublicLifeTime);
+            Sw.Close();
+            fs.Close();
+
+            FileStream fs1 = new FileStream("Graphs\\generationnumber.txt", FileMode.Append);
+            StreamWriter Sw1 = new StreamWriter(fs1);
+            Sw1.WriteLine(Bug.Generation);
+            Sw1.Close();
+            fs1.Close();
+         
+
+        }
+
         /// <summary>
         /// Создание детей в случае гибели всех жуков
         /// </summary>
         public static void CreateChildsBugs()
         {
-            Bug[] childs = new Bug[MaxNumberBugs];
+            SortBugs();
+            PrintInFile();
+            Bug[] child = new Bug[MaxNumberBugs];
             CurrentNumberBugs = 0;
             int cellRndX = 0;
             int cellRndY = 0;
-            SortBugs();
             for (int indexParent = 0; indexParent < 8; indexParent++)
             {
                 for (int childIndex = 0; childIndex < 8; childIndex++)
@@ -171,16 +189,16 @@ namespace Data
                         cellRndY = Rnd.Next(0, SizeMapY);
                         cellRndX = Rnd.Next(0, SizeMapX);
                     }
-                    childs[CurrentNumberBugs] = new Bug(cellRndX, cellRndY, childGenom, Rnd.Next(0, 8));
+                    child[CurrentNumberBugs] = new Bug(cellRndX, cellRndY, childGenom, Rnd.Next(0, 8));
                     Field[cellRndY, cellRndX].PublicContent = Bug.PublicTypeCell;
                     CurrentNumberBugs++;
                 }
             }
-            Bugs = childs;
+            Bugs = child;
             Bug.Generation++;
             FileStream bugsFile = new FileStream("SaveGeneration\\Bugs.bin", FileMode.OpenOrCreate);
             BinaryFormatter binForm = new BinaryFormatter();
-            binForm.Serialize(bugsFile, childs);
+            binForm.Serialize(bugsFile, child);
             bugsFile.Close();
         }
 

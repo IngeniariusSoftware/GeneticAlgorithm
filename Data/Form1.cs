@@ -51,7 +51,7 @@ namespace Data
                         SizeCellY * Bugs[index].PublicY + 1, SizeCellX - 1, SizeCellY - 1);
                 }
             }
-            System.Threading.Thread.Sleep(200);
+           // System.Threading.Thread.Sleep(200);
         }
 
         private void UpdateLabel()
@@ -72,7 +72,7 @@ namespace Data
             while (true)
             {
                 FieldUpdate();
-                Draw();
+                //Draw();
                 Run();
                 if (CurrentNumberBugs == 0)
                 {

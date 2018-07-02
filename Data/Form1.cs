@@ -19,17 +19,18 @@ namespace Data
         public void InitializeImage()
         {
             ImageWorld[0] = (Bitmap) Image.FromFile("Images\\Grass.png");
-            ImageWorld[1] = (Bitmap) Image.FromFile("Images\\Eat.png");
+            ImageWorld[1] = (Bitmap) Image.FromFile("Images\\Food.png");
             ImageWorld[2] = (Bitmap) Image.FromFile("Images\\Poison.png");
             ImageWorld[3] = (Bitmap) Image.FromFile("Images\\Wall.png");
-            ImageWorld[4] = (Bitmap) Image.FromFile("Images\\BugIcon.png");
+            ImageWorld[4] = (Bitmap) Image.FromFile("Images\\Bug.png");
         }
 
         public void Draw()
         {
-            int SizeCellX = 1440/SizeMapX;
-            int SizeCellY = 774/ SizeMapY;
+            int SizeCellX = 1440 / SizeMapX;
+            int SizeCellY = 774 / SizeMapY;
             Graphics picture = Graphics.FromHwnd(pictureBox1.Handle);
+            SolidBrush myBrush = new SolidBrush(Color.White);
             for (int indexY = 0; indexY < SizeMapY; indexY++)
             {
                 for (int indexX = 0; indexX < SizeMapX; indexX++)
@@ -37,21 +38,53 @@ namespace Data
                     if (Field[indexY, indexX].IsChange & Field[indexY, indexX].PublicContent < 4)
                     {
                         Field[indexY, indexX].IsChange = false;
-                        picture.DrawImage(ImageWorld[Field[indexY, indexX].PublicContent], SizeCellX * indexX + 1,
-                            SizeCellY * indexY + 1,
-                            SizeCellX - 1, SizeCellY - 1);
+                        switch (Field[indexY, indexX].PublicContent)
+                        {
+                            case 0:
+                            {
+                                myBrush.Color = Color.White;
+                                break;
+                            }
+                            case 1:
+                            {
+                                myBrush.Color = Color.Green;
+                                break;
+                            }
+                            case 2:
+                            {
+                                myBrush.Color = Color.Red;
+
+                                break;
+                            }
+                            case 3:
+                            {
+                                myBrush.Color = Color.Black;
+                                break;
+                            }
+                        }
+
+                        picture.FillRectangle(myBrush, SizeCellX * indexX + 1, SizeCellY * indexY + 1, SizeCellX - 1,
+                            SizeCellY - 1);
                     }
                 }
             }
-            for (int index = 0; index < MaxNumberBugs; index++)
+
+            Font myFont = new Font("Arial", 18);
+            for (int indexBugs = 0; indexBugs < MaxNumberBugs; indexBugs++)
             {
-                if (Bugs[index].PublicLife > 0)
+                if (Bugs[indexBugs].PublicLife > 0)
                 {
-                    picture.DrawImage(ImageWorld[Bug.PublicTypeCell], SizeCellX * Bugs[index].PublicX + 1,
-                        SizeCellY * Bugs[index].PublicY + 1, SizeCellX - 1, SizeCellY - 1);
+                    myBrush.Color = Color.Blue;
+                    picture.FillRectangle(myBrush, SizeCellX * Bugs[indexBugs].PublicX + 1,
+                        SizeCellY * Bugs[indexBugs].PublicY + 1, SizeCellX - 1, SizeCellY - 1);
+                    myBrush.Color = Color.Black;
+                    picture.DrawString(Bugs[indexBugs].PublicLife.ToString(), myFont, myBrush,
+                        SizeCellX * Bugs[indexBugs].PublicX + 1,
+                        SizeCellY * Bugs[indexBugs].PublicY + 1);
                 }
             }
-           // System.Threading.Thread.Sleep(200);
+
+          //  System.Threading.Thread.Sleep(200);
         }
 
         private void UpdateLabel()
@@ -67,14 +100,13 @@ namespace Data
 
         private void Form1_Shown(object sender, EventArgs e)
         {
-            InitializeImage(); 
             UpdateLabel();
             while (true)
             {
                 FieldUpdate();
-                //Draw();
+               Draw();
                 Run();
-                if (CurrentNumberBugs == 0)
+                if (CurrentNumberBugs < 8)
                 {
                     CreateChildsBugs();
                     UpdateLabel();

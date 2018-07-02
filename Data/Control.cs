@@ -14,9 +14,9 @@ namespace Data
 
         public static double MaxPercentWalls = 0.1;
 
-        public static int SizeMapX = 60;
+        public static int SizeMapX = 40;
 
-        public static int SizeMapY = 30;
+        public static int SizeMapY = 20;
 
         public static Bug[] Bugs = new Bug[MaxNumberBugs];
 
@@ -119,22 +119,42 @@ namespace Data
             Sw.Close();
             fs.Close();
 
-            FileStream fs1 = new FileStream("Graphs\\generationnumber.txt", FileMode.Append);
-            StreamWriter Sw1 = new StreamWriter(fs1);
-            Sw1.WriteLine(Bug.Generation);
-            Sw1.Close();
-            fs1.Close();
+            //FileStream fs1 = new FileStream("Graphs\\generationnumber.txt", FileMode.Append);
+            //StreamWriter Sw1 = new StreamWriter(fs1);
+            //Sw1.WriteLine(Bug.Generation);
+            //Sw1.Close();
+            //fs1.Close();
          
 
         }
+
+        public static void KillBugs()
+        {
+            for (int indexBugs = 0; indexBugs < Bugs.Length; indexBugs++)
+            {
+                if (Bugs[indexBugs].PublicLife>0)
+                {
+                    Field[Bugs[indexBugs].PublicY, Bugs[indexBugs].PublicX].PublicContent = 0;
+                    Bugs[indexBugs].PublicIsDead = true;
+                    Bugs[indexBugs].PublicLifeTime += Bugs[indexBugs].PublicLife;
+                    Bugs[indexBugs].PublicLife = 0;
+                }
+            }
+        }
+
+
 
         /// <summary>
         /// Создание детей в случае гибели всех жуков
         /// </summary>
         public static void CreateChildsBugs()
         {
+            KillBugs();
             SortBugs();
-            PrintInFile();
+            if (Bug.Generation % 50 == 0)
+            {
+                PrintInFile();
+            }
             Bug[] child = new Bug[MaxNumberBugs];
             CurrentNumberBugs = 0;
             int cellRndX = 0;
@@ -148,15 +168,7 @@ namespace Data
                     {
                         childGenom[indexGenom] = Bugs[MaxNumberBugs - indexParent - 1].Genom[indexGenom];
                     }
-                    if (6 > childIndex & childIndex > 3)
-                    {
-                        int rndKol = Rnd.Next(0, 8);
-                        for (int i = 0; i < rndKol; i++)
-                        {
-                            childGenom[Rnd.Next(0, Bug.PublicLengthGenom)] = Rnd.Next(0, Bug.PublicLengthGenom);
-                        }
-                    }
-                    if (childIndex > 5)
+                    if (childIndex > 4)
                     {
                         int rndParent = Rnd.Next(0, 8);
                         for (int indexGenom = 0; indexGenom < Bug.PublicLengthGenom; indexGenom++)
@@ -374,9 +386,8 @@ namespace Data
                     {
                         if (!Bugs[indexBugs].PublicIsDead)
                         {
-                            Field[Bugs[indexBugs].PublicY, Bugs[indexBugs].PublicX].PublicContent = 1;
+                            Field[Bugs[indexBugs].PublicY, Bugs[indexBugs].PublicX].PublicContent = 0;
                             Bugs[indexBugs].PublicIsDead = true;
-                            CurrentNumberFood++;
                         }
                     }
                 }
@@ -393,9 +404,9 @@ namespace Data
                     bool find = false;
                     for (int i = 0; i < 8 & !find; i++)
                     {
-                        int placeY = bugY + (int) Math.Round(Math.Cos(i * 45 / 180.0 * Math.PI),
+                        int placeY = bugY + (int)Math.Round(Math.Cos(i * 45 / 180.0 * Math.PI),
                                          MidpointRounding.AwayFromZero);
-                        int placeX = bugX + (int) Math.Round(Math.Sin(i * 45 / 180.0 * Math.PI),
+                        int placeX = bugX + (int)Math.Round(Math.Sin(i * 45 / 180.0 * Math.PI),
                                          MidpointRounding.AwayFromZero);
                         if (Field[placeY, placeX].PublicContent == 0)
                         {
@@ -413,6 +424,7 @@ namespace Data
                                 }
                             }
                         }
+
                     }
                     int rndKol = Rnd.Next(0, 3);
                     for (int i = 0; i < rndKol; i++)
@@ -422,9 +434,9 @@ namespace Data
                     find = false;
                     for (int i = 0; i < 8 & !find; i++)
                     {
-                        int placeY = bugY + (int) Math.Round(Math.Cos(i * 45 / 180.0 * Math.PI),
+                        int placeY = bugY + (int)Math.Round(Math.Cos(i * 45 / 180.0 * Math.PI),
                                          MidpointRounding.AwayFromZero);
-                        int placeX = bugX + (int) Math.Round(Math.Sin(i * 45 / 180.0 * Math.PI),
+                        int placeX = bugX + (int)Math.Round(Math.Sin(i * 45 / 180.0 * Math.PI),
                                          MidpointRounding.AwayFromZero);
                         if (Field[placeY, placeX].PublicContent == 0)
                         {
@@ -443,6 +455,15 @@ namespace Data
                             }
                         }
                     }
+
+                    SortBugs();
+                    FileStream fs = new FileStream("Graphs\\lifedrain.txt", FileMode.Append);
+                    StreamWriter Sw = new StreamWriter(fs);
+                    Sw.WriteLine(Bugs[63].PublicLifeTime);
+                    Sw.Close();
+                    fs.Close();
+
+
                     if (CurrentNumberBugs == MaxNumberBugs)
                     {
                         FileStream bugsFile = new FileStream("SaveGeneration\\Bugs.bin", FileMode.OpenOrCreate);

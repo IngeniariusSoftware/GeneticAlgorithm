@@ -5,14 +5,14 @@ namespace Data
     [Serializable]
     class Bug : Creature
     {
-        private static int _lengthGenom = 80;
+        private static int _lengthGenom = 64;
 
         public static int PublicLengthGenom
         {
             get => _lengthGenom;
         }
 
-        private static int _typeCell = 12;
+        private static int _typeCell = 4;
 
         public static int PublicTypeCell
         {
@@ -20,13 +20,6 @@ namespace Data
         }
 
         private static int _startLife = 50;
-
-        private static int _attack = 10;
-
-        public static int PublicAttack
-        {
-            get => _attack;
-        }
 
         public Bug()
         {
@@ -53,7 +46,7 @@ namespace Data
             return bug;
         }
 
-        public static int Generation = 1;
+        public static int Generation;
 
         public override void Move(int cell, int cellY, int cellX)
         {

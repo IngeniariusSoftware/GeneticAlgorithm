@@ -84,56 +84,9 @@ namespace Data
         }
 
         public abstract void Move(int cell, int cellY, int cellX);
-        //{
-            //switch (cell)
-            //{
-            //    case 0:
-            //    {
-            //        X = cellX;
-            //        Y = cellY;
-            //        break;
-            //    }
-            //    case 1:
-            //    {
-            //        X = cellX;
-            //        Y = cellY;
-            //        if (Life < 90)
-            //        {
-            //            Life += 10;
-            //        }
-            //        else
-            //        {
-            //            Life = 99;
-            //        }
-            //        break;
-            //    }
-            //    case 2:
-            //    {
-            //        Life = 0;
-            //        break;
-            //    }
-            //}
-        //}
-
+        
         public abstract void Check(int cell);
-       // {
-            //switch (cell)
-            //{
-            //    case 1:
-            //    {
-            //        if (Life < 90)
-            //        {
-            //            Life += 10;
-            //        }
-            //        else
-            //        {
-            //            Life = 99;
-            //        }
-            //        break;
-            //    }
-            //}
-      //  }
-
+   
         public void See(int cell)
         {
             switch (cell)
@@ -161,16 +114,6 @@ namespace Data
                 case 4:
                 {
                     GenomSelected += 5;
-                    break;
-                }
-                case 12:
-                {
-                    GenomSelected += 12;
-                    break;
-                }
-                case 13:
-                {
-                    GenomSelected += 13;
                     break;
                 }
             }

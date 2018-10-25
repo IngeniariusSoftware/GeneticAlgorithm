@@ -98,5 +98,125 @@ namespace Data
                 }
             }
         }
+
+        //private bool _dead;
+
+        //public bool PublicDead
+        //{
+        //    set { _dead = value; }
+        //    get => _dead;
+        //}
+
+        //private int _lifeTime;
+
+        //public int PublicLifeTime
+        //{
+        //    set { _lifeTime = value; }
+        //    get => _lifeTime;
+        //}
+
+        //private int _life;
+
+        //public int PublicLife
+        //{
+        //    set { _life = value; }
+        //    get => _life;
+        //}
+
+        //private int _x;
+
+        //public int PublicX
+        //{
+        //    set { _x = value; }
+        //    get => _x;
+        //}
+
+        //private int _y;
+
+        //public int PublicY
+        //{
+        //    set { _y = value; }
+        //    get => _y;
+        //}
+
+        //public static Bug operator --(Bug creature)
+        //{
+        //    if (creature._life > 0)
+        //    {
+        //        creature._life--;
+        //    }
+        //    return creature;
+        //}
+
+        //public int[] Genom;
+
+        //private int _genomSelected;
+
+        //public int PublicGenomSelected
+        //{
+        //    set { _genomSelected = value; }
+        //    get => _genomSelected;
+        //}
+
+        //private int _direction;
+
+        //public int Direction
+        //{
+        //    set { _direction = value; }
+        //    get => _direction;
+        //}
+        //public Bug()
+        //{
+        //    _life = 0;
+        //    _x = 0;
+        //    _y = 0;
+        //    Genom = null;
+        //    _direction = 0;
+        //    _lifeTime = 0;
+        //    _dead = false;
+        //}
+
+        //public Bug(int life, int x, int y, int[] genom, int direction)
+        //{
+        //    _life = life;
+        //    _x = x;
+        //    _y = y;
+        //    Genom = genom;
+        //    _direction = direction;
+        //    _lifeTime = 0;
+        //    _dead = false;
+        //}
+
+        //public void See(int cell)
+        //{
+        //    switch (cell)
+        //    {
+        //        case 0:
+        //        {
+        //            _genomSelected += 5;
+        //            break;
+        //        }
+        //        case 1:
+        //        {
+        //            _genomSelected += 4;
+        //                break;
+        //        }
+        //        case 2:
+        //        {
+        //            _genomSelected += 1;
+        //                break;
+        //        }
+        //        case 3:
+        //        {
+        //            _genomSelected += 3;
+        //                break;
+        //        }
+        //        case 4:
+        //        {
+        //            _genomSelected += 2;
+        //                break;
+        //        }
+        //    }
+        //}
     }
 }

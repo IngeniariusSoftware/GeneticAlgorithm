@@ -66,6 +66,38 @@ namespace Data
                     }
                 }
             }
+            int cellRndX = 0;
+            int cellRndY = 0;
+            while (CurrentNumberRock < MaxNumberRocks)
+            {
+                while (Field[cellRndY, cellRndX].PublicContent != 0)
+                {
+                    cellRndY = Rnd.Next(0, SizeMapY);
+                    cellRndX = Rnd.Next(0, SizeMapX);
+                }
+                Field[cellRndY, cellRndX].PublicContent = 4;
+                CurrentNumberRock++;
+            }
+            while (CurrentNumberFood < MaxNumberFood)
+            {
+                while (Field[cellRndY, cellRndX].PublicContent != 0)
+                {
+                    cellRndY = Rnd.Next(0, SizeMapY);
+                    cellRndX = Rnd.Next(0, SizeMapX);
+                }
+                Field[cellRndY, cellRndX].PublicContent = 1;
+                CurrentNumberFood++;
+            }
+            while (CurrentNumberPoison < MaxNumberPoison)
+            {
+                while (Field[cellRndY, cellRndX].PublicContent != 0)
+                {
+                    cellRndY = Rnd.Next(0, SizeMapY);
+                    cellRndX = Rnd.Next(0, SizeMapX);
+                }
+                Field[cellRndY, cellRndX].PublicContent = 2;
+                CurrentNumberPoison++;
+            }
         }
         /// <summary>
         /// Поддерживаем уровень еды, яда и т.д. на карте
@@ -109,6 +141,14 @@ namespace Data
                     }
                 }
             }
+            //Проверка
+            //string listLife = "";
+            //foreach (var bug in Bugs)
+            //{
+            //    listLife = listLife + bug.PublicLifeTime.ToString() + " ";
+            //}
+            //MessageBox.Show(listLife);
+            //Конец проверки
         }
 
         public static void PrintInFile()
@@ -205,6 +245,7 @@ namespace Data
                     Field[cellRndY, cellRndX].PublicContent = Bug.PublicTypeCell;
                     CurrentNumberBugs++;
                 }
+                CurrentNumberBugs = Bugs.Length;
             }
             Bugs = child;
             Bug.Generation++;

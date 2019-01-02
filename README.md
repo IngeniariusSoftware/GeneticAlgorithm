@@ -25,5 +25,5 @@
 This project is licensed under the MIT License - see the [LICENSE.md](LICENSE.md) file for details
 
 ## Спасибо
-- Каналу [foo52ru](https://www.youtube.com/user/foo52ru) за демонстрацию возмонжностей применения генетических алгоритвом и создание
+- Каналу [foo52ru](https://www.youtube.com/user/foo52ru) за демонстрацию возможностей применения генетических алгоритмов, а также создание
 эволюционной модели с их использованием

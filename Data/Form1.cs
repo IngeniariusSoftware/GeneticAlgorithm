@@ -98,30 +98,6 @@ namespace Data
             picture.DrawString(Bug.Generation.ToString(), myFont, myBrush, 1450, 20);
         }
 
-        private void UpdateLabel()
-        {
-            Graphics picture = Graphics.FromHwnd(pictureBox1.Handle);
-            //SolidBrush myBrush = new SolidBrush(Color.Green);
-            //Font myFont = new Font("Microsoft Sans Serif", 12F);
-            //picture.FillRectangle(myBrush, 1440, 0, 90, 80);
-            //myBrush = new SolidBrush(Color.Black);
-            //picture.DrawString("Род жуков:", myFont, myBrush, 1440, 0);
-            //picture.DrawString(Bug.Generation.ToString(), myFont, myBrush, 1470, 20);
-            //picture.DrawString("Род муравьёв:", myFont, myBrush, 1440, 40);
-            //picture.DrawString(Ant.Generation.ToString(), myFont, myBrush, 1470, 60);
-
-            SolidBrush myBrush = new SolidBrush(Color.Green);
-            Point[] points = new Point[63];
-            points[0] = new Point(0, 790);
-            for (int index = 1; index < points.Length - 1; index++)
-            {
-                points[index] = new Point((index - 1) * 30, 790 - Rnd.Next(200, 300));
-            }
-            points[points.Length - 1] = new Point(1900, 790);
-            picture.FillClosedCurve(myBrush, points);
-
-        }
-
         private void Form1_Shown(object sender, EventArgs e)
         {
             UpdateLabel();

@@ -68,7 +68,7 @@ namespace Data
             }
             int cellRndX = 0;
             int cellRndY = 0;
-            while (CurrentNumberRock < MaxNumberRocks)
+            while (CurrentNumberWalls < Field.Length * MaxPercentWalls)
             {
                 while (Field[cellRndY, cellRndX].PublicContent != 0)
                 {
@@ -76,9 +76,9 @@ namespace Data
                     cellRndX = Rnd.Next(0, SizeMapX);
                 }
                 Field[cellRndY, cellRndX].PublicContent = 4;
-                CurrentNumberRock++;
+                CurrentNumberWalls++;
             }
-            while (CurrentNumberFood < MaxNumberFood)
+            while (CurrentNumberFood < Field.Length * MaxPercentFood)
             {
                 while (Field[cellRndY, cellRndX].PublicContent != 0)
                 {
@@ -88,7 +88,7 @@ namespace Data
                 Field[cellRndY, cellRndX].PublicContent = 1;
                 CurrentNumberFood++;
             }
-            while (CurrentNumberPoison < MaxNumberPoison)
+            while (CurrentNumberPoison < Field.Length * MaxPercentPoison)
             {
                 while (Field[cellRndY, cellRndX].PublicContent != 0)
                 {
@@ -245,7 +245,6 @@ namespace Data
                     Field[cellRndY, cellRndX].PublicContent = Bug.PublicTypeCell;
                     CurrentNumberBugs++;
                 }
-                CurrentNumberBugs = Bugs.Length;
             }
             Bugs = child;
             Bug.Generation++;
